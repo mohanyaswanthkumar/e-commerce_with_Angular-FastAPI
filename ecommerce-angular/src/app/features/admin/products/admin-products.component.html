@@ -1,0 +1,205 @@
+<div class="page-content">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <div>
+        <h1 class="section-title" style="margin-bottom: 4px">Product Management</h1>
+        <p class="header-sub">{{ total() }} total products</p>
+      </div>
+      <div class="header-actions">
+        <div class="search-bar" style="width: 280px">
+          <span class="search-icon">🔍</span>
+          <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search products...">
+        </div>
+        <button class="btn btn-primary" (click)="openAdd()">+ Add Product</button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-overlay"><div class="spinner"></div></div>
+    } @else if (products().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>No products found</h3>
+        <button class="btn btn-primary" (click)="openAdd()">Add First Product</button>
+      </div>
+    } @else {
+      <!-- Products Table -->
+      <div class="table-wrap card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product.id) {
+              <tr>
+                <td class="product-cell">
+                  <img [src]="product.thumbnail || '/assets/images/placeholder.png'"
+                       [alt]="product.name" class="product-thumb" (error)="onImgError($event)">
+                  <div class="product-meta">
+                    <p class="product-name">{{ product.name }}</p>
+                    @if (product.brand) {
+                      <p class="product-brand">{{ product.brand }}</p>
+                    }
+                  </div>
+                </td>
+                <td class="mono">{{ product.sku }}</td>
+                <td>
+                  <span class="badge badge-muted">{{ product.category }}</span>
+                </td>
+                <td>
+                  <p class="price-cell">₹{{ product.price | number:'1.2-2' }}</p>
+                  @if (product.original_price && product.original_price > product.price) {
+                    <p class="price-original-cell">₹{{ product.original_price | number:'1.2-2' }}</p>
+                  }
+                </td>
+                <td>
+                  <span class="stock-qty" [class.low]="product.stock_quantity <= 5">
+                    {{ product.stock_quantity }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="product.is_in_stock ? 'badge-success' : 'badge-danger'">
+                    {{ product.is_in_stock ? 'In Stock' : 'Out of Stock' }}
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <button class="btn btn-ghost btn-sm" (click)="openEdit(product)">Edit</button>
+                  <button class="btn btn-danger btn-sm" (click)="delete(product.id)"
+                          [disabled]="deleting[product.id]">
+                    @if (deleting[product.id]) { <span class="spinner spinner-sm"></span> }
+                    @else { Delete }
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button [disabled]="page() === 1" (click)="goToPage(page()-1)">‹</button>
+          @for (p of pageNums(); track p) {
+            <button [class.active]="p === page()" (click)="goToPage(p)">{{ p }}</button>
+          }
+          <button [disabled]="page() === totalPages()" (click)="goToPage(page()+1)">›</button>
+        </div>
+      }
+    }
+
+    <!-- Add / Edit Modal -->
+    @if (showForm()) {
+      <div class="modal-backdrop" (click)="closeForm()">
+        <div class="modal-box product-modal" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>{{ editingId() ? 'Edit Product' : 'Add New Product' }}</h3>
+            <button class="close-btn" (click)="closeForm()">×</button>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="save()" class="product-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Product Name *</label>
+                <input formControlName="name" type="text" class="form-control"
+                       [class.error]="form.get('name')!.invalid && form.get('name')!.touched"
+                       placeholder="e.g. Premium Wireless Headphones">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SKU *</label>
+                <input formControlName="sku" type="text" class="form-control"
+                       [class.error]="form.get('sku')!.invalid && form.get('sku')!.touched"
+                       placeholder="e.g. PWH-001">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <input formControlName="category" type="text" class="form-control"
+                       list="category-list" placeholder="e.g. Electronics">
+                <datalist id="category-list">
+                  @for (cat of categories(); track cat) {
+                    <option [value]="cat"></option>
+                  }
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Brand</label>
+                <input formControlName="brand" type="text" class="form-control" placeholder="e.g. Sony">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Price (₹) *</label>
+                <input formControlName="price" type="number" class="form-control" min="0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Original Price (₹)</label>
+                <input formControlName="original_price" type="number" class="form-control" min="0" step="0.01">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Stock Quantity *</label>
+                <input formControlName="stock_quantity" type="number" class="form-control" min="0">
+              </div>
+              <div class="form-group" style="justify-content: flex-end; padding-top: 28px">
+                <label class="check-label">
+                  <input type="checkbox" formControlName="is_in_stock">
+                  Mark as In Stock
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Short Description</label>
+              <input formControlName="short_description" type="text" class="form-control"
+                     placeholder="One-line product summary">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Full Description *</label>
+              <textarea formControlName="description" class="form-control" rows="3"
+                        [class.error]="form.get('description')!.invalid && form.get('description')!.touched"
+                        placeholder="Detailed product description..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Thumbnail URL</label>
+              <input formControlName="thumbnail" type="url" class="form-control"
+                     placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tags (comma-separated)</label>
+              <input formControlName="tags" type="text" class="form-control"
+                     placeholder="e.g. wireless, bluetooth, premium">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-ghost" (click)="closeForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving()">
+                @if (saving()) { <span class="spinner spinner-sm"></span> }
+                {{ editingId() ? 'Update Product' : 'Create Product' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="page-content">
+  <div class="container">
+
+    <div class="dashboard-header">
+      <div>
+        <h1 class="section-title" style="margin-bottom: 4px">Admin Dashboard</h1>
+        <p class="header-sub">Manage your store from one place</p>
+      </div>
+      <button class="btn btn-secondary" (click)="syncStockFromSap()" [disabled]="syncing()">
+        @if (syncing()) {
+          <span class="spinner spinner-sm"></span> Syncing...
+        } @else {
+          ⚙️ Sync Stock from SAP
+        }
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-overlay"><div class="spinner"></div></div>
+    } @else if (stats()) {
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(59,130,246,0.1); color: var(--info)">👥</div>
+          <div class="stat-info">
+            <p class="stat-label">Total Users</p>
+            <p class="stat-number">{{ stats()!.total_users | number }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(233,69,96,0.1); color: var(--accent)">📋</div>
+          <div class="stat-info">
+            <p class="stat-label">Total Orders</p>
+            <p class="stat-number">{{ stats()!.total_orders | number }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(34,197,94,0.1); color: var(--success)">💰</div>
+          <div class="stat-info">
+            <p class="stat-label">Total Revenue</p>
+            <p class="stat-number">₹{{ stats()!.total_revenue | number:'1.0-0' }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(139,92,246,0.1); color: #7c3aed">📦</div>
+          <div class="stat-info">
+            <p class="stat-label">Total Products</p>
+            <p class="stat-number">{{ stats()!.total_products | number }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(245,158,11,0.1); color: var(--warning)">⏳</div>
+          <div class="stat-info">
+            <p class="stat-label">Pending Orders</p>
+            <p class="stat-number warning">{{ stats()!.pending_orders | number }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(239,68,68,0.1); color: var(--danger)">⚠️</div>
+          <div class="stat-info">
+            <p class="stat-label">Low Stock Products</p>
+            <p class="stat-number danger">{{ stats()!.low_stock_products | number }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <h2 class="quick-actions-title">Quick Actions</h2>
+      <div class="quick-actions-grid">
+        <a routerLink="/admin/products" class="action-card">
+          <span class="action-icon">📦</span>
+          <h3>Manage Products</h3>
+          <p>Add, edit, delete, or update product stock</p>
+          <span class="action-link">Go to Products →</span>
+        </a>
+
+        <a routerLink="/admin/users" class="action-card">
+          <span class="action-icon">👥</span>
+          <h3>Manage Users</h3>
+          <p>View, edit roles, or deactivate user accounts</p>
+          <span class="action-link">Go to Users →</span>
+        </a>
+
+        <a routerLink="/orders" class="action-card">
+          <span class="action-icon">📋</span>
+          <h3>View Orders</h3>
+          <p>Review all customer orders and their status</p>
+          <span class="action-link">Go to Orders →</span>
+        </a>
+
+        <div class="action-card sap-card" (click)="syncStockFromSap()">
+          <span class="action-icon">⚙️</span>
+          <h3>SAP Sync</h3>
+          <p>Sync product stock availability from SAP S/4HANA via OData</p>
+          <span class="action-link">Trigger Sync →</span>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

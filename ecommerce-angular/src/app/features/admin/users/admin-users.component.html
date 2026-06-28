@@ -1,0 +1,146 @@
+<div class="page-content">
+  <div class="container">
+
+    <div class="admin-header">
+      <div>
+        <h1 class="section-title" style="margin-bottom: 4px">User Management</h1>
+        <p class="header-sub">{{ total() }} total users</p>
+      </div>
+      <div class="search-bar" style="width: 300px">
+        <span class="search-icon">🔍</span>
+        <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()"
+               placeholder="Search by name or email...">
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-overlay"><div class="spinner"></div></div>
+    } @else if (users().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <h3>No users found</h3>
+      </div>
+    } @else {
+      <div class="table-wrap card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr>
+                <td class="user-cell">
+                  <div class="user-avatar-sm">
+                    {{ user.first_name[0] }}{{ user.last_name[0] }}
+                  </div>
+                  <div>
+                    <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
+                    <p class="user-id">ID: {{ user.id }}</p>
+                  </div>
+                </td>
+                <td class="email-cell">{{ user.email }}</td>
+                <td>{{ user.mobile || '—' }}</td>
+                <td>
+                  <span class="badge" [class]="roleBadge(user.role)">{{ user.role | titlecase }}</span>
+                </td>
+                <td>
+                  <span class="badge" [class]="user.is_active ? 'badge-success' : 'badge-danger'">
+                    {{ user.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>{{ user.created_at | date:'mediumDate' }}</td>
+                <td class="actions-cell">
+                  <button class="btn btn-ghost btn-sm" (click)="openEdit(user)">Edit</button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)"
+                          [disabled]="deleting[user.id]">
+                    @if (deleting[user.id]) { <span class="spinner spinner-sm"></span> }
+                    @else { Delete }
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button [disabled]="page() === 1" (click)="goToPage(page()-1)">‹</button>
+          @for (p of pageNums(); track p) {
+            <button [class.active]="p === page()" (click)="goToPage(p)">{{ p }}</button>
+          }
+          <button [disabled]="page() === totalPages()" (click)="goToPage(page()+1)">›</button>
+        </div>
+      }
+    }
+
+    <!-- Edit Modal -->
+    @if (showForm()) {
+      <div class="modal-backdrop" (click)="closeForm()">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>Edit User — {{ editingUser()?.first_name }} {{ editingUser()?.last_name }}</h3>
+            <button class="close-btn" (click)="closeForm()">×</button>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input formControlName="first_name" type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input formControlName="last_name" type="text" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input formControlName="email" type="email" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mobile</label>
+              <input formControlName="mobile" type="tel" class="form-control">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Role</label>
+                <select formControlName="role" class="form-control">
+                  @for (r of roles; track r) {
+                    <option [value]="r">{{ r | titlecase }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group" style="justify-content: flex-end; padding-top: 28px">
+                <label class="check-label">
+                  <input type="checkbox" formControlName="is_active">
+                  Account Active
+                </label>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-ghost" (click)="closeForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving()">
+                @if (saving()) { <span class="spinner spinner-sm"></span> }
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

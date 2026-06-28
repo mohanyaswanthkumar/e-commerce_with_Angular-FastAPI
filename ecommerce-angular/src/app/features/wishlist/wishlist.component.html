@@ -1,0 +1,75 @@
+<div class="page-content">
+  <div class="container">
+
+    <div class="wishlist-header">
+      <div>
+        <h1 class="section-title" style="margin-bottom: 4px">My Wishlist</h1>
+        @if (!loading()) {
+          <p class="count-text">{{ products().length }} saved item(s)</p>
+        }
+      </div>
+      <a routerLink="/products" class="btn btn-outline">Browse More Products</a>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">💔</div>
+        <h3>Your wishlist is empty</h3>
+        <p>Save products you love by clicking the heart icon on any product</p>
+        <a routerLink="/products" class="btn btn-primary">Discover Products</a>
+      </div>
+    } @else {
+      <div class="wishlist-grid">
+        @for (product of products(); track product.id) {
+          <div class="wishlist-card">
+            <button class="remove-btn" (click)="removeFromWishlist(product)" title="Remove from wishlist">
+              ❤️
+            </button>
+
+            <a [routerLink]="['/products', product.id]" class="card-img-link">
+              <img [src]="product.thumbnail || '/assets/images/placeholder.png'"
+                   [alt]="product.name"
+                   class="card-img"
+                   (error)="onImgError($event)">
+              @if (!product.is_in_stock) {
+                <div class="oos-overlay">Out of Stock</div>
+              }
+            </a>
+
+            <div class="card-body">
+              <p class="card-category">{{ product.category }}</p>
+              <a [routerLink]="['/products', product.id]" class="card-name">{{ product.name }}</a>
+
+              <div class="card-price-row">
+                <span class="price">₹{{ product.price | number:'1.2-2' }}</span>
+                @if (product.original_price && product.original_price > product.price) {
+                  <span class="price-original">₹{{ product.original_price | number:'1.2-2' }}</span>
+                }
+              </div>
+
+              <div class="card-actions">
+                <a [routerLink]="['/products', product.id]" class="btn btn-ghost btn-sm">View Details</a>
+                <button class="btn btn-primary btn-sm"
+                        [disabled]="!product.is_in_stock || addingToCart[product.id]"
+                        (click)="addToCart(product)">
+                  @if (addingToCart[product.id]) {
+                    <span class="spinner spinner-sm"></span>
+                  } @else if (!product.is_in_stock) {
+                    Out of Stock
+                  } @else {
+                    + Add to Cart
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
