@@ -1,0 +1,87 @@
+.cards-page {
+  padding: 2rem 1.5rem 3.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  h1 { font-size: 1.4rem; }
+}
+
+.loading-text { color: var(--color-text-muted); }
+
+.cards-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--color-text-muted);
+
+  p { margin-bottom: 1.25rem; }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.credit-card-tile {
+  position: relative;
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.status-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+
+  &.status-active { background: rgba(22, 163, 74, 0.25); color: #4ade80; }
+  &.status-expired { background: rgba(220, 38, 38, 0.25); color: #f87171; }
+}
+
+.card-brand {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: .75;
+  margin-bottom: 1.5rem;
+}
+
+.card-number {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 1.15rem;
+  letter-spacing: .05em;
+  margin-bottom: 1.25rem;
+}
+
+.card-holder {
+  font-size: .85rem;
+  text-transform: uppercase;
+  opacity: .9;
+  margin-bottom: .3rem;
+}
+
+.card-expiry {
+  font-size: .8rem;
+  opacity: .75;
+  margin-bottom: 1.25rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: .6rem;
+
+  .btn { flex: 1; font-size: .82rem; }
+  .btn-secondary { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+}

@@ -1,0 +1,74 @@
+<div class="plp-page container">
+
+  <div class="plp-header">
+    <h1>{{ searchTerm() ? 'Search results for "' + searchTerm() + '"' : 'All products' }}</h1>
+    <span class="result-count" *ngIf="!isLoading()">{{ total() }} item(s)</span>
+  </div>
+
+  <div class="plp-loading" *ngIf="isLoading()">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
+  </div>
+
+  <div class="plp-empty" *ngIf="!isLoading() && products().length === 0">
+    <p>No products found{{ searchTerm() ? ' for "' + searchTerm() + '"' : '' }}.</p>
+  </div>
+
+  <div class="plp-grid" *ngIf="!isLoading() && products().length > 0">
+    <div class="product-card" *ngFor="let product of products()">
+
+      <button
+        type="button"
+        class="wishlist-icon"
+        [class.wishlist-active]="product.is_wishlisted"
+        [disabled]="togglingWishlistId() === product.id"
+        (click)="toggleWishlist(product)"
+        [attr.aria-label]="product.is_wishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+      >
+        {{ product.is_wishlisted ? '♥' : '♡' }}
+      </button>
+
+      <a [routerLink]="['/products', product.id]" class="product-image-link">
+        <img
+          *ngIf="product.image_url; else noImage"
+          [src]="product.image_url"
+          [alt]="product.name"
+          class="product-image"
+        />
+        <ng-template #noImage><div class="product-image product-image-placeholder">No image</div></ng-template>
+        <span class="out-of-stock-badge" *ngIf="!product.is_in_stock">Out of stock</span>
+      </a>
+
+      <a [routerLink]="['/products', product.id]" class="product-name">{{ product.name }}</a>
+      <div class="product-price">{{ product.price | currency }}</div>
+
+      <div class="product-actions">
+        <input
+          type="number"
+          min="1"
+          class="qty-box"
+          [value]="product.selectedQuantity"
+          [disabled]="!product.is_in_stock"
+          (change)="setQuantity(product, $any($event.target).value)"
+          aria-label="Quantity"
+        />
+        <button
+          type="button"
+          class="btn btn-primary add-to-cart-btn"
+          [disabled]="!product.is_in_stock || addingProductId() === product.id"
+          (click)="addToCart(product)"
+        >
+          <span class="spinner" *ngIf="addingProductId() === product.id"></span>
+          {{ !product.is_in_stock ? 'Out of stock' : (addingProductId() === product.id ? 'Adding...' : 'Add to cart') }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading() && totalPages > 1">
+    <button type="button" class="btn btn-secondary" [disabled]="page() <= 1" (click)="goToPage(page() - 1)">Previous</button>
+    <span class="page-indicator">Page {{ page() }} of {{ totalPages }}</span>
+    <button type="button" class="btn btn-secondary" [disabled]="page() >= totalPages" (click)="goToPage(page() + 1)">Next</button>
+  </div>
+
+</div>

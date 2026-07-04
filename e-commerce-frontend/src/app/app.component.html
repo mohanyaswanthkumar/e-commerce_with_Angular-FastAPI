@@ -1,0 +1,22 @@
+<app-header></app-header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
+
+<div class="toast-stack" *ngIf="notifications.messages().length">
+  <div
+    *ngFor="let toast of notifications.messages()"
+    class="toast"
+    [class.toast-error]="toast.type === 'error'"
+    [class.toast-success]="toast.type === 'success'"
+  >
+    <span>{{ toast.text }}</span>
+    <button type="button" class="toast-close" (click)="notifications.dismiss(toast.id)">&times;</button>
+  </div>
+</div>
+
+<app-footer></app-footer>
+
+<app-added-to-cart-modal></app-added-to-cart-modal>
+

@@ -1,0 +1,45 @@
+.app-main {
+  min-height: calc(100vh - var(--header-height) - 260px);
+}
+
+.toast-stack {
+  position: fixed;
+  top: calc(var(--header-height) + 12px);
+  right: 1rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  max-width: 360px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: .88rem;
+  color: #fff;
+  animation: slide-in .2s ease-out;
+}
+
+.toast-error { background: var(--color-danger); }
+.toast-success { background: var(--color-success); }
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: .85;
+  &:hover { opacity: 1; }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

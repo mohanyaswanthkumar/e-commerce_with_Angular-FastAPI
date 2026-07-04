@@ -1,0 +1,54 @@
+<div class="admin-page">
+
+  <h1>Edit user</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading user...</p>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="first_name">First name</label>
+        <input id="first_name" type="text" formControlName="first_name" />
+      </div>
+      <div class="form-field">
+        <label for="last_name">Last name</label>
+        <input id="last_name" type="text" formControlName="last_name" />
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+
+    <div class="form-field">
+      <label for="mobile_number">Mobile number</label>
+      <input id="mobile_number" type="tel" formControlName="mobile_number" />
+    </div>
+
+    <div class="form-field">
+      <label for="role">Role</label>
+      <select id="role" formControlName="role">
+        <option value="customer">Customer</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+
+    <div class="checkbox-field">
+      <label>
+        <input type="checkbox" formControlName="is_active" />
+        Active (can log in)
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        <span class="spinner" *ngIf="isSaving()"></span>
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+
+  </form>
+</div>

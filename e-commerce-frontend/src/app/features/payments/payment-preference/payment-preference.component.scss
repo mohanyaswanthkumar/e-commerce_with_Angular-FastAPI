@@ -1,0 +1,56 @@
+.preference-page {
+  padding: 2rem 1.5rem 3.5rem;
+}
+
+h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
+
+.loading-text { color: var(--color-text-muted); }
+
+.form-card {
+  max-width: 460px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.radio-option {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-weight: 600;
+    font-size: .92rem;
+    cursor: pointer;
+  }
+
+  input[type="radio"] { width: 16px; height: 16px; }
+}
+
+.nested-select {
+  margin-top: .75rem;
+  margin-left: 1.6rem;
+
+  select {
+    width: 100%;
+    padding: .6rem .75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: .88rem;
+  }
+}
+
+.no-cards-text {
+  font-size: .82rem;
+  color: var(--color-text-muted);
+}
+
+.form-actions {
+  display: flex;
+  gap: .75rem;
+  margin-top: 1rem;
+
+  .btn { flex: 1; }
+}

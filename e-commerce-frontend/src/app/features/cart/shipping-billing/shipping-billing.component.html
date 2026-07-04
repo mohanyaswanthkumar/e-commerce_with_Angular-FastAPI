@@ -1,0 +1,85 @@
+<div class="checkout-page container" *ngIf="!isLoading(); else loadingTpl">
+
+  <div class="checkout-steps">
+    <span class="step step-active">1. Shipping &amp; Billing</span>
+    <span class="step">2. Order Review</span>
+    <span class="step">3. Confirmation</span>
+  </div>
+
+  <div class="checkout-grid" *ngIf="data() as data">
+
+    <div class="checkout-main">
+
+      <section class="panel">
+        <h2>Shipping &amp; billing</h2>
+
+        <div class="form-field" *ngIf="data.available_addresses.length; else noAddresses">
+          <label for="address">Deliver to</label>
+          <select id="address" [value]="selectedAddressId()" (change)="onAddressChange($any($event.target).value)">
+            <option *ngFor="let addr of data.available_addresses" [value]="addr.id">
+              {{ addr.label ? addr.label + ' — ' : '' }}{{ addr.full_name }}, {{ addr.line1 }}, {{ addr.city }}, {{ addr.postal_code }}
+            </option>
+          </select>
+        </div>
+        <ng-template #noAddresses>
+          <div class="alert alert-error">
+            You don't have a saved address yet.
+            <a routerLink="/addresses">Add one</a> to continue.
+          </div>
+        </ng-template>
+
+        <div class="payment-type-row">
+          <span class="payment-type-label">Payment type</span>
+          <span class="payment-type-value">{{ paymentTypeLabel }}</span>
+          <a routerLink="/payments/preference" class="btn-link change-payment-link">Change</a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Items in your cart</h2>
+
+        <div class="cart-empty" *ngIf="!data.cart.items.length">
+          Your cart is empty. <a routerLink="/products">Browse products</a>.
+        </div>
+
+        <div class="cart-line" *ngFor="let item of data.cart.items">
+          <img
+            *ngIf="item.product_image_url; else noImg"
+            [src]="item.product_image_url"
+            [alt]="item.product_name"
+            class="cart-line-image"
+          />
+          <ng-template #noImg><div class="cart-line-image cart-line-image-placeholder">No image</div></ng-template>
+
+          <div class="cart-line-info">
+            <div class="cart-line-name">{{ item.product_name }}</div>
+            <div class="cart-line-qty">Qty: {{ item.quantity }} &times; {{ item.unit_price | currency }}</div>
+          </div>
+
+          <div class="cart-line-total">{{ item.line_total | currency }}</div>
+        </div>
+      </section>
+
+    </div>
+
+    <app-order-summary
+      [items]="data.cart.items"
+      [subtotal]="data.cart.subtotal"
+      [taxAmount]="data.cart.tax_amount"
+      [shippingAmount]="data.cart.shipping_amount"
+      [totalAmount]="data.cart.total_amount"
+      continueLabel="Continue"
+      backLabel="Back to shopping"
+      [continueDisabled]="!canContinue"
+      (continueClicked)="continue()"
+      (backClicked)="back()"
+    ></app-order-summary>
+
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="checkout-page container">
+    <p class="loading-text">Loading your cart...</p>
+  </div>
+</ng-template>

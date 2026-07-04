@@ -1,0 +1,42 @@
+<div class="cards-page container">
+
+  <div class="page-header">
+    <h1>Credit cards</h1>
+    <a routerLink="/payments/credit-cards/new" class="btn btn-primary">+ Add new card</a>
+  </div>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your cards...</p>
+
+  <div class="cards-empty" *ngIf="!isLoading() && cards().length === 0">
+    <p>You haven't saved any cards yet.</p>
+    <a routerLink="/payments/credit-cards/new" class="btn btn-primary">Add your first card</a>
+  </div>
+
+  <div class="card-grid" *ngIf="!isLoading() && cards().length > 0">
+    <div class="credit-card-tile" *ngFor="let card of cards()">
+
+      <span class="status-badge" [class.status-active]="card.status === 'active'" [class.status-expired]="card.status === 'expired'">
+        {{ card.status }}
+      </span>
+
+      <div class="card-brand" *ngIf="card.card_brand">{{ card.card_brand }}</div>
+      <div class="card-number">{{ card.card_number_masked }}</div>
+      <div class="card-holder">{{ card.cardholder_name }}</div>
+      <div class="card-expiry">Expires {{ card.expiry_month }}/{{ card.expiry_year }}</div>
+
+      <div class="card-actions">
+        <a [routerLink]="['/payments/credit-cards', card.id, 'edit']" class="btn btn-secondary">Edit</a>
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="deletingId() === card.id"
+          (click)="deleteCard(card)"
+        >
+          {{ deletingId() === card.id ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

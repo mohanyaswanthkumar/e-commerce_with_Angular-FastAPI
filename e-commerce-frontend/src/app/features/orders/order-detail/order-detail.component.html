@@ -1,0 +1,52 @@
+<div class="order-detail-page container">
+
+  <a routerLink="/orders" class="back-link">&larr; Back to order history</a>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading order details...</p>
+
+  <div class="not-found" *ngIf="!isLoading() && notFound()">
+    <p>This order could not be found.</p>
+  </div>
+
+  <div class="detail-card" *ngIf="!isLoading() && !notFound() && order() as order">
+
+    <div class="detail-header">
+      <div>
+        <h1>Order {{ order.order_number }}</h1>
+        <div class="detail-date">Placed on {{ order.created_at | date:'medium' }}</div>
+      </div>
+      <span class="order-status" [class]="'status-' + order.status">{{ order.status.replace('_', ' ') }}</span>
+    </div>
+
+    <div class="order-id-row">
+      <div class="order-id-block">
+        <span class="order-id-label">Local Order ID</span>
+        <span class="order-id-value">{{ order.order_number }}</span>
+      </div>
+      <div class="order-id-block">
+        <span class="order-id-label">SAP Sales Order Number</span>
+        <span class="order-id-value" *ngIf="order.sap_sales_order_number">{{ order.sap_sales_order_number }}</span>
+        <span class="sap-pending" *ngIf="!order.sap_sales_order_number">Syncing with SAP...</span>
+      </div>
+      <div class="order-id-block" *ngIf="order.tracking_status">
+        <span class="order-id-label">Tracking status</span>
+        <span class="order-id-value">{{ order.tracking_status }}</span>
+      </div>
+    </div>
+
+    <div class="detail-items">
+      <div class="detail-line" *ngFor="let item of order.items">
+        <span>{{ item.product_name_snapshot }} ({{ item.sku_snapshot }}) &times; {{ item.quantity }}</span>
+        <span>{{ item.line_total | currency }}</span>
+      </div>
+    </div>
+
+    <div class="detail-totals">
+      <div class="totals-row"><span>Subtotal</span><span>{{ order.subtotal | currency }}</span></div>
+      <div class="totals-row"><span>Tax</span><span>{{ order.tax_amount | currency }}</span></div>
+      <div class="totals-row"><span>Shipping</span><span>{{ order.shipping_amount | currency }}</span></div>
+      <div class="totals-row totals-total"><span>Total</span><span>{{ order.total_amount | currency }}</span></div>
+    </div>
+
+  </div>
+</div>

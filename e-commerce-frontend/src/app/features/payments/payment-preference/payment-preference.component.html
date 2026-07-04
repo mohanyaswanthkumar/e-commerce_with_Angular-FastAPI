@@ -1,0 +1,44 @@
+<div class="preference-page container">
+
+  <h1>Default payment preference</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your preference...</p>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="radio-option">
+      <label>
+        <input type="radio" formControlName="preference_type" value="invoice_me" />
+        Invoice me
+      </label>
+    </div>
+
+    <div class="radio-option">
+      <label>
+        <input type="radio" formControlName="preference_type" value="credit_card" />
+        Credit card
+      </label>
+
+      <div class="nested-select" *ngIf="isCreditCardSelected">
+        <select formControlName="default_credit_card_id" *ngIf="activeCards().length; else noCards">
+          <option [value]="null" disabled>Select a card</option>
+          <option *ngFor="let card of activeCards()" [value]="card.id">
+            {{ card.card_brand ? card.card_brand + ' ' : '' }}{{ card.card_number_masked }} — {{ card.cardholder_name }}
+          </option>
+        </select>
+        <ng-template #noCards>
+          <p class="no-cards-text">You don't have any active cards. Add one under Credit cards first.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        <span class="spinner" *ngIf="isSaving()"></span>
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+
+  </form>
+</div>

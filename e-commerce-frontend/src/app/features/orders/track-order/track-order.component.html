@@ -1,0 +1,33 @@
+<div class="track-page container">
+
+  <h1>Track my order</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your orders...</p>
+
+  <div class="track-empty" *ngIf="!isLoading() && orders().length === 0">
+    <p>You don't have any orders to track yet.</p>
+    <a routerLink="/products" class="btn btn-primary">Start shopping</a>
+  </div>
+
+  <div class="track-tiles" *ngIf="!isLoading() && orders().length > 0">
+    <div class="track-tile" *ngFor="let order of orders()">
+
+      <div class="track-tile-main">
+        <div class="track-order-number">{{ order.order_number }}</div>
+        <div class="track-meta">
+          <span>Placed {{ order.created_at | date:'mediumDate' }}</span>
+          <span *ngIf="order.sap_sales_order_number">&middot; SAP: {{ order.sap_sales_order_number }}</span>
+        </div>
+      </div>
+
+      <div class="track-status-block">
+        <span class="track-status">{{ order.tracking_status || 'Processing' }}</span>
+        <span class="track-number" *ngIf="order.tracking_number">Tracking #: {{ order.tracking_number }}</span>
+      </div>
+
+      <a [routerLink]="['/orders', order.id]" class="btn btn-secondary track-details-btn">Order details</a>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,81 @@
+<div class="address-form-page container">
+
+  <h1>{{ isEditMode() ? 'Edit address' : 'Add new address' }}</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading address...</p>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="form-field">
+      <label for="label">Label (optional)</label>
+      <input id="label" type="text" formControlName="label" placeholder="e.g. Home, Office" />
+    </div>
+
+    <div class="form-field">
+      <label for="full_name">Full name</label>
+      <input id="full_name" type="text" formControlName="full_name" />
+      <span class="field-error" *ngIf="form.get('full_name')?.touched && form.get('full_name')?.hasError('required')">
+        Full name is required.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="phone_number">Phone number</label>
+      <input id="phone_number" type="tel" formControlName="phone_number" />
+      <span class="field-error" *ngIf="form.get('phone_number')?.touched && form.get('phone_number')?.hasError('required')">
+        Phone number is required.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="line1">Address line 1</label>
+      <input id="line1" type="text" formControlName="line1" />
+      <span class="field-error" *ngIf="form.get('line1')?.touched && form.get('line1')?.hasError('required')">
+        Address line 1 is required.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="line2">Address line 2 (optional)</label>
+      <input id="line2" type="text" formControlName="line2" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="city">City</label>
+        <input id="city" type="text" formControlName="city" />
+      </div>
+      <div class="form-field">
+        <label for="state">State</label>
+        <input id="state" type="text" formControlName="state" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="postal_code">Postal code</label>
+        <input id="postal_code" type="text" formControlName="postal_code" />
+      </div>
+      <div class="form-field">
+        <label for="country">Country</label>
+        <input id="country" type="text" formControlName="country" />
+      </div>
+    </div>
+
+    <div class="checkbox-field">
+      <label>
+        <input type="checkbox" formControlName="is_default" />
+        Set as default address
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        <span class="spinner" *ngIf="isSaving()"></span>
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+
+  </form>
+</div>

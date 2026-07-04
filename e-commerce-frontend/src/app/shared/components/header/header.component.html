@@ -1,0 +1,85 @@
+<header class="header">
+  <div class="header-inner container">
+
+    <a routerLink="/" class="logo">
+      <span class="logo-mark">S</span>
+      <span class="logo-text">ShopEase</span>
+    </a>
+
+    <nav class="main-nav">
+      <a routerLink="/products" routerLinkActive="active">Products</a>
+    </nav>
+
+    <form class="search-bar" (ngSubmit)="onSearchSubmit()">
+      <input
+        type="search"
+        name="search"
+        placeholder="Search products..."
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        aria-label="Search products"
+      />
+      <button type="submit" aria-label="Search">🔍</button>
+    </form>
+
+    <div class="header-actions">
+
+      <!-- Unauthenticated -->
+      <a *ngIf="!auth.isAuthenticated()" routerLink="/login" class="login-link btn btn-secondary">
+        Login
+      </a>
+
+      <!-- Authenticated -->
+      <ng-container *ngIf="auth.isAuthenticated()">
+
+        <a routerLink="/wishlist" class="icon-btn" aria-label="Wishlist" title="Wishlist">
+          ♡
+        </a>
+
+        <a routerLink="/cart" class="icon-btn" aria-label="Cart" title="Cart">
+          🛒
+        </a>
+
+        <div class="hi-customer">
+          <button type="button" class="hi-customer-toggle" (click)="toggleDropdown()">
+            Hi, {{ auth.currentUser()?.first_name || 'there' }}
+            <span class="caret" [class.caret-open]="isDropdownOpen()">▾</span>
+          </button>
+
+          <div class="dropdown-panel" *ngIf="isDropdownOpen()" (click)="closeDropdown()">
+
+            <div class="dropdown-section">
+              <div class="dropdown-heading">My orders</div>
+              <a routerLink="/orders" class="dropdown-link">Order history</a>
+              <a routerLink="/orders/tracking" class="dropdown-link">Track my order</a>
+            </div>
+
+            <div class="dropdown-section">
+              <div class="dropdown-heading">My profile</div>
+              <a routerLink="/profile/account-details" class="dropdown-link">Account details</a>
+              <a routerLink="/profile/change-password" class="dropdown-link">Change password</a>
+              <div class="dropdown-subheading">Payment information</div>
+              <a routerLink="/payments/preference" class="dropdown-link dropdown-link-nested">Default payment preference</a>
+              <a routerLink="/payments/credit-cards" class="dropdown-link dropdown-link-nested">Credit cards</a>
+            </div>
+
+            <div class="dropdown-section">
+              <div class="dropdown-heading">Addresses</div>
+              <a routerLink="/addresses" class="dropdown-link">Manage addresses</a>
+            </div>
+
+            <div class="dropdown-section" *ngIf="auth.isAdmin()">
+              <a routerLink="/admin/products" class="dropdown-link dropdown-admin-link">Admin dashboard</a>
+            </div>
+
+            <div class="dropdown-section">
+              <button type="button" class="dropdown-link dropdown-logout" (click)="logout()">Logout</button>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</header>

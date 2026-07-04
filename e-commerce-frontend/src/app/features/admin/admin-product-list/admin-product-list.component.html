@@ -1,0 +1,68 @@
+<div class="admin-page">
+
+  <div class="page-header">
+    <h1>Products</h1>
+    <div class="header-actions">
+      <button type="button" class="btn btn-secondary" [disabled]="isSyncing()" (click)="syncStockFromSap()">
+        <span class="spinner" *ngIf="isSyncing()"></span>
+        {{ isSyncing() ? 'Syncing...' : 'Sync stock from SAP' }}
+      </button>
+      <a routerLink="/admin/products/new" class="btn btn-primary">+ Add product</a>
+    </div>
+  </div>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading products...</p>
+
+  <table class="admin-table" *ngIf="!isLoading()">
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>In stock?</th>
+        <th>Active?</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products()">
+        <td class="mono">{{ product.sku }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.stock_quantity }}</td>
+        <td>
+          <span class="pill" [class.pill-success]="product.is_in_stock" [class.pill-danger]="!product.is_in_stock">
+            {{ product.is_in_stock ? 'In stock' : 'Out of stock' }}
+          </span>
+        </td>
+        <td>
+          <span class="pill" [class.pill-success]="product.is_active" [class.pill-muted]="!product.is_active">
+            {{ product.is_active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td class="row-actions">
+          <a [routerLink]="['/admin/products', product.id, 'edit']" class="btn btn-secondary">Edit</a>
+          <button
+            type="button"
+            class="btn btn-danger"
+            [disabled]="deletingId() === product.id"
+            (click)="deleteProduct(product)"
+          >
+            {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="products().length === 0">
+        <td colspan="7" class="empty-cell">No products found.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="!isLoading()">
+    <button type="button" class="btn btn-secondary" [disabled]="page() <= 1" (click)="goToPage(page() - 1)">Previous</button>
+    <span class="page-indicator">Page {{ page() }}</span>
+    <button type="button" class="btn btn-secondary" [disabled]="products().length < pageSize" (click)="goToPage(page() + 1)">Next</button>
+  </div>
+
+</div>

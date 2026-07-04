@@ -1,0 +1,80 @@
+<div class="admin-page">
+
+  <h1>{{ isEditMode() ? 'Edit product' : 'Add product' }}</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading product...</p>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="sku">SKU</label>
+        <input id="sku" type="text" formControlName="sku" />
+        <span class="field-error" *ngIf="form.get('sku')?.touched && form.get('sku')?.hasError('required')">
+          SKU is required.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input id="name" type="text" formControlName="name" />
+        <span class="field-error" *ngIf="form.get('name')?.touched && form.get('name')?.hasError('required')">
+          Name is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="description">Short description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+
+    <div class="form-field">
+      <label for="detailed_description">Detailed description (shown on PDP)</label>
+      <textarea id="detailed_description" formControlName="detailed_description" rows="4"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="price">Price</label>
+        <input id="price" type="number" step="0.01" min="0.01" formControlName="price" />
+        <span class="field-error" *ngIf="form.get('price')?.touched && form.get('price')?.hasError('min')">
+          Price must be greater than 0.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="stock_quantity">Stock quantity</label>
+        <input id="stock_quantity" type="number" min="0" formControlName="stock_quantity" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="image_url">Image URL</label>
+        <input id="image_url" type="text" formControlName="image_url" placeholder="https://..." />
+      </div>
+
+      <div class="form-field">
+        <label for="category_id">Category ID (optional)</label>
+        <input id="category_id" type="number" formControlName="category_id" />
+      </div>
+    </div>
+
+    <div class="checkbox-field">
+      <label>
+        <input type="checkbox" formControlName="is_active" />
+        Active (visible on the storefront)
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        <span class="spinner" *ngIf="isSaving()"></span>
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -1,0 +1,45 @@
+<!-- Authenticated: auth-homepage per spec -->
+<section class="auth-home container" *ngIf="auth.isAuthenticated(); else guestHero">
+  <div class="banner">
+    <div class="banner-content">
+      <h1>Welcome back, {{ auth.currentUser()?.first_name || 'there' }}!</h1>
+      <p>Great deals are waiting for you. Pick up right where you left off.</p>
+    </div>
+  </div>
+
+  <div class="home-ctas">
+    <a routerLink="/orders" class="cta-card">
+      <span class="cta-icon">📦</span>
+      <span class="cta-label">Order history</span>
+    </a>
+
+    <a routerLink="/profile/account-details" class="cta-card">
+      <span class="cta-icon">👤</span>
+      <span class="cta-label">Personal details</span>
+    </a>
+
+    <a *ngIf="cartService.itemCount() === 0" routerLink="/products" class="cta-card cta-primary">
+      <span class="cta-icon">🛍️</span>
+      <span class="cta-label">Start new order</span>
+    </a>
+
+    <a *ngIf="cartService.itemCount() > 0" routerLink="/cart" class="cta-card cta-primary">
+      <span class="cta-icon">🛍️</span>
+      <span class="cta-label">Continue Shopping</span>
+    </a>
+  </div>
+</section>
+
+<!-- Unauthenticated: generic landing -->
+<ng-template #guestHero>
+  <section class="guest-hero">
+    <div class="container guest-hero-inner">
+      <h1>Shop smarter with ShopEase</h1>
+      <p>Curated products, fast checkout, and real-time stock — synced straight from SAP.</p>
+      <div class="guest-hero-ctas">
+        <a routerLink="/products" class="btn btn-primary">Browse products</a>
+        <a routerLink="/login" class="btn btn-secondary">Login</a>
+      </div>
+    </div>
+  </section>
+</ng-template>

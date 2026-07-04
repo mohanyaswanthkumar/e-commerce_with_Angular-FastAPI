@@ -1,0 +1,65 @@
+<div class="card-form-page container">
+
+  <h1>{{ isEditMode() ? 'Edit card' : 'Add new card' }}</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading card...</p>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="form-field">
+      <label for="cardholder_name">Cardholder name</label>
+      <input id="cardholder_name" type="text" formControlName="cardholder_name" autocomplete="cc-name" />
+      <span class="field-error" *ngIf="form.get('cardholder_name')?.touched && form.get('cardholder_name')?.hasError('required')">
+        Cardholder name is required.
+      </span>
+    </div>
+
+    <div class="form-field" *ngIf="!isEditMode()">
+      <label for="card_number">Card number</label>
+      <input id="card_number" type="text" inputmode="numeric" formControlName="card_number" autocomplete="cc-number" placeholder="1234123412341234" />
+      <span class="field-error" *ngIf="form.get('card_number')?.touched && form.get('card_number')?.hasError('pattern')">
+        Enter a valid card number (13–19 digits).
+      </span>
+    </div>
+
+    <div class="form-field" *ngIf="isEditMode()">
+      <label>Card number</label>
+      <div class="readonly-value">Card number and CVV can't be changed after saving.</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="expiry_month">Expiry month</label>
+        <input id="expiry_month" type="text" formControlName="expiry_month" placeholder="MM" autocomplete="cc-exp-month" />
+        <span class="field-error" *ngIf="form.get('expiry_month')?.touched && form.get('expiry_month')?.hasError('pattern')">
+          Use MM (01–12).
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="expiry_year">Expiry year</label>
+        <input id="expiry_year" type="text" formControlName="expiry_year" placeholder="YYYY" autocomplete="cc-exp-year" />
+        <span class="field-error" *ngIf="form.get('expiry_year')?.touched && form.get('expiry_year')?.hasError('pattern')">
+          Use YYYY.
+        </span>
+      </div>
+
+      <div class="form-field" *ngIf="!isEditMode()">
+        <label for="cvv">CVV</label>
+        <input id="cvv" type="text" inputmode="numeric" formControlName="cvv" autocomplete="cc-csc" placeholder="123" />
+        <span class="field-error" *ngIf="form.get('cvv')?.touched && form.get('cvv')?.hasError('pattern')">
+          3–4 digits.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        <span class="spinner" *ngIf="isSaving()"></span>
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+
+  </form>
+</div>

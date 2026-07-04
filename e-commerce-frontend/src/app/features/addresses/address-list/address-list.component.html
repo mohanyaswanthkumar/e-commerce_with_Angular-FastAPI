@@ -1,0 +1,44 @@
+<div class="addresses-page container">
+
+  <div class="page-header">
+    <h1>Addresses</h1>
+    <a routerLink="/addresses/new" class="btn btn-primary">+ Add new address</a>
+  </div>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your addresses...</p>
+
+  <div class="addresses-empty" *ngIf="!isLoading() && addresses().length === 0">
+    <p>You haven't added any addresses yet.</p>
+    <a routerLink="/addresses/new" class="btn btn-primary">Add your first address</a>
+  </div>
+
+  <div class="address-grid" *ngIf="!isLoading() && addresses().length > 0">
+    <div class="address-card" *ngFor="let address of addresses()">
+
+      <span class="default-badge" *ngIf="address.is_default">Default</span>
+
+      <div class="address-label" *ngIf="address.label">{{ address.label }}</div>
+      <div class="address-name">{{ address.full_name }}</div>
+      <div class="address-lines">
+        {{ address.line1 }}<span *ngIf="address.line2">, {{ address.line2 }}</span><br />
+        {{ address.city }}, {{ address.state }} {{ address.postal_code }}<br />
+        {{ address.country }}
+      </div>
+      <div class="address-phone">Phone: {{ address.phone_number }}</div>
+
+      <div class="address-actions">
+        <a [routerLink]="['/addresses', address.id, 'edit']" class="btn btn-secondary">Edit</a>
+        <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="deletingId() === address.id"
+          (click)="deleteAddress(address)"
+        >
+          {{ deletingId() === address.id ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

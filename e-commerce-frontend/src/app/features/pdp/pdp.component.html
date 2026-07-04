@@ -1,0 +1,90 @@
+<div class="pdp-page container">
+
+  <div class="pdp-loading" *ngIf="isLoading()">
+    <div class="skeleton-image"></div>
+    <div class="skeleton-lines">
+      <div class="skeleton-line" style="width: 60%"></div>
+      <div class="skeleton-line" style="width: 30%"></div>
+      <div class="skeleton-line" style="width: 90%"></div>
+      <div class="skeleton-line" style="width: 80%"></div>
+    </div>
+  </div>
+
+  <div class="pdp-not-found" *ngIf="!isLoading() && notFound()">
+    <p>This product could not be found.</p>
+    <a routerLink="/products" class="btn btn-primary">Back to products</a>
+  </div>
+
+  <div class="pdp-content" *ngIf="!isLoading() && !notFound() && product() as product">
+
+    <a routerLink="/products" class="back-link">&larr; Back to products</a>
+
+    <div class="pdp-grid">
+
+      <div class="pdp-image-col">
+        <img
+          *ngIf="product.image_url; else noImage"
+          [src]="product.image_url"
+          [alt]="product.name"
+          class="pdp-image"
+        />
+        <ng-template #noImage><div class="pdp-image pdp-image-placeholder">No image</div></ng-template>
+      </div>
+
+      <div class="pdp-info-col">
+        <h1>{{ product.name }}</h1>
+        <div class="pdp-sku">SKU: {{ product.sku }}</div>
+
+        <div class="pdp-price-row">
+          <span class="pdp-price">{{ product.price | currency }}</span>
+          <span class="pdp-stock" [class.in-stock]="product.is_in_stock" [class.out-of-stock]="!product.is_in_stock">
+            {{ product.is_in_stock ? 'In stock' : 'Out of stock' }}
+          </span>
+        </div>
+
+        <p class="pdp-description" *ngIf="product.description">{{ product.description }}</p>
+
+        <div class="pdp-detailed-description" *ngIf="product.detailed_description">
+          <h2>Product details</h2>
+          <p>{{ product.detailed_description }}</p>
+        </div>
+
+        <div class="pdp-actions">
+          <div class="qty-stepper">
+            <button type="button" (click)="changeQuantity(-1)" [disabled]="quantity() <= 1" aria-label="Decrease quantity">-</button>
+            <input
+              type="number"
+              min="1"
+              [value]="quantity()"
+              (change)="setQuantity($any($event.target).value)"
+              aria-label="Quantity"
+            />
+            <button type="button" (click)="changeQuantity(1)" aria-label="Increase quantity">+</button>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary pdp-add-btn"
+            [disabled]="!product.is_in_stock || isAdding()"
+            (click)="addToCart()"
+          >
+            <span class="spinner" *ngIf="isAdding()"></span>
+            {{ !product.is_in_stock ? 'Out of stock' : (isAdding() ? 'Adding...' : 'Add to cart') }}
+          </button>
+
+          <button
+            type="button"
+            class="wishlist-btn"
+            [class.wishlist-active]="product.is_wishlisted"
+            [disabled]="isTogglingWishlist()"
+            (click)="toggleWishlist()"
+            [attr.aria-label]="product.is_wishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+          >
+            {{ product.is_wishlisted ? '♥' : '♡' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

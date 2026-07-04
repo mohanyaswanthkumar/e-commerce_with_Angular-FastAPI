@@ -1,0 +1,79 @@
+<div class="orders-page container">
+
+  <h1>My orders</h1>
+
+  <div class="tabs">
+    <button type="button" class="tab" [class.tab-active]="activeTab() === 'all'" (click)="selectTab('all')">
+      All orders
+    </button>
+    <button type="button" class="tab" [class.tab-active]="activeTab() === 'favourites'" (click)="selectTab('favourites')">
+      Favourites
+    </button>
+  </div>
+
+  <div class="filters">
+    <select (change)="selectStatus($any($event.target).value)" aria-label="Filter by status">
+      <option *ngFor="let opt of statusOptions" [value]="opt.value ?? ''">{{ opt.label }}</option>
+    </select>
+  </div>
+
+  <div class="orders-loading" *ngIf="isLoading()">
+    <div class="skeleton-tile" *ngFor="let i of [1,2,3]"></div>
+  </div>
+
+  <div class="orders-empty" *ngIf="!isLoading() && orders().length === 0">
+    <p>No orders found.</p>
+    <a routerLink="/products" class="btn btn-primary">Start shopping</a>
+  </div>
+
+  <div class="order-tiles" *ngIf="!isLoading() && orders().length > 0">
+    <div class="order-tile" *ngFor="let order of orders()" (click)="viewDetails(order.id)">
+
+      <button
+        type="button"
+        class="favourite-icon"
+        [class.favourite-active]="order.is_favourite"
+        [disabled]="togglingFavouriteId() === order.id"
+        (click)="toggleFavourite(order, $event)"
+        [attr.aria-label]="order.is_favourite ? 'Remove from favourites' : 'Add to favourites'"
+      >
+        {{ order.is_favourite ? '♥' : '♡' }}
+      </button>
+
+      <div class="order-tile-main">
+        <div class="order-tile-header">
+          <span class="order-number">{{ order.order_number }}</span>
+          <span class="order-status" [class]="'status-' + order.status">{{ order.status.replace('_', ' ') }}</span>
+        </div>
+
+        <div class="order-meta">
+          <span>{{ order.created_at | date:'mediumDate' }}</span>
+          <span>&middot;</span>
+          <span>{{ order.item_count }} item(s)</span>
+          <span *ngIf="order.sap_sales_order_number">&middot;</span>
+          <span *ngIf="order.sap_sales_order_number">SAP: {{ order.sap_sales_order_number }}</span>
+        </div>
+
+        <div class="order-total">{{ order.total_amount | currency }}</div>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-secondary reorder-btn"
+        [disabled]="reorderingId() === order.id"
+        (click)="reorder(order, $event)"
+      >
+        <span class="spinner" *ngIf="reorderingId() === order.id"></span>
+        {{ reorderingId() === order.id ? 'Adding...' : 'Re-order' }}
+      </button>
+
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading() && totalPages > 1">
+    <button type="button" class="btn btn-secondary" [disabled]="page() <= 1" (click)="goToPage(page() - 1)">Previous</button>
+    <span class="page-indicator">Page {{ page() }} of {{ totalPages }}</span>
+    <button type="button" class="btn btn-secondary" [disabled]="page() >= totalPages" (click)="goToPage(page() + 1)">Next</button>
+  </div>
+
+</div>

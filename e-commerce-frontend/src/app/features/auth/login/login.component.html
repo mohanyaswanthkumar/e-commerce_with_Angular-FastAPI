@@ -1,0 +1,56 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <h1>Login</h1>
+    <p class="auth-subtitle">Sign in with your email or mobile number.</p>
+
+    <div class="alert alert-error" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+      <div class="form-field">
+        <label for="identifier">Email or mobile number</label>
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          placeholder="you@example.com or +91 9xxxxxxxxx"
+          autocomplete="username"
+        />
+        <span class="field-error" *ngIf="form.get('identifier')?.touched && form.get('identifier')?.hasError('required')">
+          Email or mobile number is required.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+        <span class="field-error" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          Password is required.
+        </span>
+      </div>
+
+      <div class="auth-links-row">
+        <a routerLink="/forgot-password">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary auth-submit" [disabled]="isSubmitting()">
+        <span class="spinner" *ngIf="isSubmitting()"></span>
+        {{ isSubmitting() ? 'Logging in...' : 'Login' }}
+      </button>
+
+    </form>
+
+    <div class="auth-footer">
+      Don't have an account?
+      <a routerLink="/register" class="btn-link">Register</a>
+    </div>
+
+  </div>
+</div>

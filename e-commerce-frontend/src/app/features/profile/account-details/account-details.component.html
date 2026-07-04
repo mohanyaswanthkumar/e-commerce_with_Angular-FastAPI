@@ -1,0 +1,55 @@
+<div class="profile-page container">
+
+  <h1>Account details</h1>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your details...</p>
+
+  <form class="profile-card" [formGroup]="form" (ngSubmit)="save()" *ngIf="!isLoading()" novalidate>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="first_name">First name</label>
+        <input id="first_name" type="text" formControlName="first_name" />
+        <span class="field-error" *ngIf="form.get('first_name')?.touched && form.get('first_name')?.hasError('required')">
+          First name is required.
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="last_name">Last name</label>
+        <input id="last_name" type="text" formControlName="last_name" />
+        <span class="field-error" *ngIf="form.get('last_name')?.touched && form.get('last_name')?.hasError('required')">
+          Last name is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+      <span class="field-error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+        Enter a valid email address.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="mobile_number">Mobile number</label>
+      <input id="mobile_number" type="tel" formControlName="mobile_number" />
+    </div>
+
+    <div class="profile-actions">
+      <ng-container *ngIf="!isEditing()">
+        <button type="button" class="btn btn-primary" (click)="edit()">Edit details</button>
+      </ng-container>
+
+      <ng-container *ngIf="isEditing()">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+          <span class="spinner" *ngIf="isSaving()"></span>
+          {{ isSaving() ? 'Saving...' : 'Save' }}
+        </button>
+      </ng-container>
+    </div>
+
+  </form>
+</div>

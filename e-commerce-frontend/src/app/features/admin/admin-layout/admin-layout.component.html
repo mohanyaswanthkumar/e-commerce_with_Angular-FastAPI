@@ -1,0 +1,16 @@
+<div class="admin-shell container">
+
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-title">Admin dashboard</div>
+
+    <nav class="admin-nav">
+      <a routerLink="/admin/products" routerLinkActive="admin-nav-active">Products</a>
+      <a routerLink="/admin/users" routerLinkActive="admin-nav-active">Users</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

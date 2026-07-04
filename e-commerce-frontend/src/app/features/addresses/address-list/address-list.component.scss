@@ -1,0 +1,78 @@
+.addresses-page {
+  padding: 2rem 1.5rem 3.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  h1 { font-size: 1.4rem; }
+}
+
+.loading-text { color: var(--color-text-muted); }
+
+.addresses-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--color-text-muted);
+
+  p { margin-bottom: 1.25rem; }
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.address-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.default-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--color-success);
+  background: #f0fdf4;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+}
+
+.address-label {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: .3rem;
+}
+
+.address-name { font-weight: 700; margin-bottom: .4rem; }
+
+.address-lines {
+  font-size: .88rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  margin-bottom: .5rem;
+}
+
+.address-phone {
+  font-size: .82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.1rem;
+}
+
+.address-actions {
+  display: flex;
+  gap: .6rem;
+
+  .btn { flex: 1; font-size: .85rem; }
+}

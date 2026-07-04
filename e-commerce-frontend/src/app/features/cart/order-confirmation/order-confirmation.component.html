@@ -1,0 +1,60 @@
+<div class="checkout-page container">
+
+  <div class="checkout-steps" *ngIf="!isLoading() && !notFound()">
+    <span class="step">1. Shipping &amp; Billing</span>
+    <span class="step">2. Order Review</span>
+    <span class="step step-active">3. Confirmation</span>
+  </div>
+
+  <p class="loading-text" *ngIf="isLoading()">Loading your order...</p>
+
+  <div class="not-found" *ngIf="!isLoading() && notFound()">
+    <p>We couldn't find that order.</p>
+    <a routerLink="/orders" class="btn btn-primary">View order history</a>
+  </div>
+
+  <div class="confirmation-card" *ngIf="!isLoading() && !notFound() && order() as order">
+
+    <div class="confirmation-icon">✓</div>
+    <h1>Thank you! Your order is confirmed.</h1>
+    <p class="confirmation-subtitle">A confirmation has been sent to your email.</p>
+
+    <div class="order-id-row">
+      <div class="order-id-block">
+        <span class="order-id-label">Local Order ID</span>
+        <span class="order-id-value">{{ order.order_number }}</span>
+      </div>
+
+      <div class="order-id-block">
+        <span class="order-id-label">SAP Sales Order Number</span>
+        <span class="order-id-value" *ngIf="order.sap_sales_order_number">{{ order.sap_sales_order_number }}</span>
+        <span class="sap-pending" *ngIf="!order.sap_sales_order_number && order.sap_sync_status === 'pending'">
+          <span class="spinner spinner-dark"></span> Syncing with SAP...
+        </span>
+        <span class="sap-failed" *ngIf="!order.sap_sales_order_number && order.sap_sync_status === 'failed'">
+          SAP sync failed — our team has been notified.
+        </span>
+      </div>
+    </div>
+
+    <div class="confirmation-items">
+      <div class="confirmation-line" *ngFor="let item of order.items">
+        <span>{{ item.product_name_snapshot }} &times; {{ item.quantity }}</span>
+        <span>{{ item.line_total | currency }}</span>
+      </div>
+    </div>
+
+    <div class="confirmation-totals">
+      <div class="totals-row"><span>Subtotal</span><span>{{ order.subtotal | currency }}</span></div>
+      <div class="totals-row"><span>Tax</span><span>{{ order.tax_amount | currency }}</span></div>
+      <div class="totals-row"><span>Shipping</span><span>{{ order.shipping_amount | currency }}</span></div>
+      <div class="totals-row totals-total"><span>Total</span><span>{{ order.total_amount | currency }}</span></div>
+    </div>
+
+    <div class="confirmation-actions">
+      <a routerLink="/orders" class="btn btn-secondary">View order history</a>
+      <a routerLink="/products" class="btn btn-primary">Continue shopping</a>
+    </div>
+
+  </div>
+</div>

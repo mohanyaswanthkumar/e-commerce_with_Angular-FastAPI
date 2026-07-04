@@ -1,0 +1,63 @@
+<div class="checkout-page container" *ngIf="!isLoading(); else loadingTpl">
+
+  <div class="checkout-steps">
+    <span class="step">1. Shipping &amp; Billing</span>
+    <span class="step step-active">2. Order Review</span>
+    <span class="step">3. Confirmation</span>
+  </div>
+
+  <div class="checkout-grid" *ngIf="review() as review">
+
+    <div class="checkout-main">
+
+      <section class="panel">
+        <h2>Delivery address</h2>
+        <div class="address-block">
+          <div class="address-name">{{ review.address.full_name }}</div>
+          <div>{{ review.address.line1 }}<span *ngIf="review.address.line2">, {{ review.address.line2 }}</span></div>
+          <div>{{ review.address.city }}, {{ review.address.state }} {{ review.address.postal_code }}</div>
+          <div>{{ review.address.country }}</div>
+          <div class="address-phone">Phone: {{ review.address.phone_number }}</div>
+        </div>
+
+        <div class="payment-type-row">
+          <span class="payment-type-label">Payment type</span>
+          <span class="payment-type-value">{{ paymentTypeLabel }}</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Review your items</h2>
+
+        <div class="cart-line" *ngFor="let item of review.items">
+          <div class="cart-line-info">
+            <div class="cart-line-name">{{ item.product_name }}</div>
+            <div class="cart-line-qty">Qty: {{ item.quantity }} &times; {{ item.unit_price | currency }}</div>
+          </div>
+          <div class="cart-line-total">{{ item.line_total | currency }}</div>
+        </div>
+      </section>
+
+    </div>
+
+    <app-order-summary
+      [items]="review.items"
+      [subtotal]="review.subtotal"
+      [taxAmount]="review.tax_amount"
+      [shippingAmount]="review.shipping_amount"
+      [totalAmount]="review.total_amount"
+      continueLabel="Place order"
+      backLabel="Back"
+      [isSubmitting]="isPlacingOrder()"
+      (continueClicked)="placeOrder()"
+      (backClicked)="back()"
+    ></app-order-summary>
+
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="checkout-page container">
+    <p class="loading-text">Preparing your order review...</p>
+  </div>
+</ng-template>
